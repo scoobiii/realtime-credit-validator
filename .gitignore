@@ -1,0 +1,43 @@
+# Binários e artefatos de build
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+tmp/
+
+# Arquivos de workspace do Go
+go.work
+go.work.sum
+
+# Testes e cobertura
+*.test
+*.out
+coverage.html
+coverage.out
+
+# Arquivos de ambiente com segredos (CRÍTICO)
+.env
+.env.local
+.env.*.local
+
+# Dependências
+vendor/
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de banco de dados locais
+*.db
+*.db-shm
+*.db-wal
