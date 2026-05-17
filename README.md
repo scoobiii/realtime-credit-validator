@@ -1,53 +1,5 @@
-Você tem razão. O README atualizado está com uma seção de "Pré-requisitos" dentro do "Início Rápido", mas não há um bloco dedicado e claro no início do documento. Vou adicionar uma seção "📋 Requisitos" logo após os badges e antes da arquitetura, listando de forma organizada as dependências necessárias.
 
----
 
-📋 Requisitos (seção a adicionar)
-
-```markdown
-## 📋 Requisitos
-
-| Ferramenta | Versão | Instalação |
-|------------|--------|-------------|
-| **Go** | 1.21+ | [golang.org/dl](https://golang.org/dl) |
-| **Docker** | 20.10+ | [docker.com](https://docs.docker.com/engine/install/) |
-| **Docker Compose** | v2.20+ | (já incluso no Docker Desktop) |
-| **Python** | 3.9+ | (pré‑instalado no Cloud Shell / Linux) |
-| **k6** | 0.54+ | [instalação rápida](#instalando-o-k6) |
-| **pyjwt** | 2.x | `pip install pyjwt` (opcional, apenas para geração manual de token) |
-
-### Instalando o k6 (caso não tenha)
-
-```bash
-# Linux (via .deb)
-sudo gpg -k && sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
-echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-sudo apt update && sudo apt install k6
-
-# Ou baixar o binário diretamente
-curl -L -o k6.tar.gz https://github.com/grafana/k6/releases/download/v0.54.0/k6-linux-amd64.tar.gz
-tar -xzf k6.tar.gz
-sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/
-```
-
-Verificação rápida
-
-```bash
-go version   # → 1.21+
-docker version
-k6 version
-python3 --version
-```
-
-```
-
----
-
-## ✅ README completo atualizado (com a seção de requisitos)
-
-Abaixo está o README completo já integrando a seção de requisitos no início, mantendo todo o restante do conteúdo que já estava excelente.
-
-```markdown
 # 🏦 Realtime Credit Validator
 
 > Validador de crédito em tempo real com conformidade Anatel — latência p(95) < 30ms, 100% de sucesso em testes de carga com 10 VUs concorrentes.
@@ -58,7 +10,6 @@ Abaixo está o README completo já integrando a seção de requisitos no início
 [![Go](https://img.shields.io/badge/Go-1.21+-00ADD8)](https://golang.org)
 [![k6](https://img.shields.io/badge/Tested%20with-k6-7D64FF)](https://k6.io)
 
----
 
 ## 📋 Requisitos
 
@@ -430,10 +381,10 @@ HTTPS e Proxy Reverso
 
 O arquivo deployments/docker-compose.yaml inclui um serviço nginx que:
 
-· Redireciona HTTP → HTTPS
-· Termina TLS (certificados self-signed ou Let's Encrypt)
-· Aplica rate limit adicional
-· Faz proxy reverso para o gateway Go
+  · Redireciona HTTP → HTTPS
+  · Termina TLS (certificados self-signed ou Let's Encrypt)
+  · Aplica rate limit adicional
+  · Faz proxy reverso para o gateway Go
 
 Para gerar certificados:
 
@@ -469,20 +420,19 @@ Este script configura CI, gera certificados, sobe o ambiente com HTTPS e roda o 
 · Integração BACEN SPI (Pix real)
 · SDK cliente (Go, Python, Node)
 
----
 
 💰 Licença e Uso Comercial
 
 Licença: Apache 2.0
 
 Uso livre para projetos open source. Para uso comercial:
-
-Tier Preço Inclui
-Startup R$ 2.000/mês até 1M req/mês, suporte email
-Enterprise R$ 8.000/mês ilimitado, SLA 99.9%, suporte dedicado
-White-label R$ 50.000 único código fonte + customização + treinamento
-
-Contato: abra uma issue ou envie email.
+  
+  Tier Preço Inclui
+  Startup R$ 2.000/mês até 1M req/mês, suporte email
+  Enterprise R$ 8.000/mês ilimitado, SLA 99.9%, suporte dedicado
+  White-label R$ 50.000 único código fonte + customização + treinamento
+  
+Contato: abra uma issue ou env  ie email.
 
 ---
 
