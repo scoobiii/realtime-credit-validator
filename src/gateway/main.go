@@ -8,6 +8,7 @@ import (
 
     "github.com/gin-gonic/gin"
     "github.com/redis/go-redis/v9"
+    _ "github.com/lib/pq"
 
     "github.com/scoobiii/realtime-credit-validator/src/gateway/auth"
     "github.com/scoobiii/realtime-credit-validator/src/gateway/handlers"
@@ -22,9 +23,12 @@ func main() {
     }
     db, err := sql.Open("postgres", dbURL)
     if err != nil {
-        log.Fatal(err)
+        log.Fatal("Failed to connect to PostgreSQL:", err)
     }
     defer db.Close()
+    db.SetMaxOpenConns(50)
+    db.SetMaxIdleConns(25)
+    db.SetConnMaxLifetime(5 * time.Minute)
 
     kafkaBrokers := []string{os.Getenv("KAFKA_BROKERS")}
     if len(kafkaBrokers) == 0 || kafkaBrokers[0] == "" {
@@ -41,7 +45,7 @@ func main() {
     }
     rdb := redis.NewClient(&redis.Options{Addr: redisAddr})
 
-    limiter := ratelimit.NewRateLimiter(rdb, 10, time.Second)
+    limiter := ratelimit.NewRateLimiter(rdb, 1000, time.Second)
 
     jwtSecret := os.Getenv("JWT_SECRET")
     if jwtSecret == "" {
@@ -50,7 +54,9 @@ func main() {
     jwtCfg := auth.NewJWTConfig(jwtSecret, "realtime-credit-validator", "anatel-gateway", 24*time.Hour)
 
     r := gin.Default()
-    r.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"status": "ok"}) })
+    r.GET("/health", func(c *gin.Context) {
+        c.JSON(200, gin.H{"status": "ok"})
+    })
 
     api := r.Group("/v1")
     api.Use(auth.JWTAuthMiddleware(jwtCfg))

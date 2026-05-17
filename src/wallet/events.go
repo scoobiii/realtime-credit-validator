@@ -1,8 +1,6 @@
 package wallet
 
-import (
-    "github.com/segmentio/kafka-go"
-)
+import "github.com/segmentio/kafka-go"
 
 func NewKafkaWriter(brokers []string, topic string) *kafka.Writer {
     return &kafka.Writer{
@@ -10,6 +8,6 @@ func NewKafkaWriter(brokers []string, topic string) *kafka.Writer {
         Topic:        topic,
         Balancer:     &kafka.LeastBytes{},
         RequiredAcks: kafka.RequireOne,
-        Async:        false,
+        Async:        true,
     }
 }

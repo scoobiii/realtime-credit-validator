@@ -1,0 +1,4 @@
+CONTAINER ID   IMAGE                              COMMAND                  CREATED       STATUS       PORTS                                        NAMES
+543ce3441a4e   confluentinc/cp-zookeeper:latest   "/etc/confluent/dock…"   2 hours ago   Up 2 hours   2888/tcp, 0.0.0.0:2181->2181/tcp, 3888/tcp   zookeeper
+87aeb6dfaf61   redis:7-alpine                     "docker-entrypoint.s…"   2 hours ago   Up 2 hours   0.0.0.0:6379->6379/tcp                       redis
+8682ab39c5eb   postgres:15-alpine                 "docker-entrypoint.s…"   2 hours ago   Up 2 hours   0.0.0.0:5432->5432/tcp                       postgres

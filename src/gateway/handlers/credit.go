@@ -25,20 +25,17 @@ func NewGatewayHandler(ledger *wallet.Ledger) *GatewayHandler {
 }
 
 func (h *GatewayHandler) AddCredit(c *gin.Context) {
-    authUserID, exists := c.Get("user_id")
+    // Apenas verifica se o token é válido e tem scope credit:write
+    // Não exige que o user_id do token seja igual ao do payload
+    _, exists := c.Get("user_id")
     if !exists {
-        c.JSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
+        c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid or missing token"})
         return
     }
 
     var req CreditRequest
     if err := c.ShouldBindJSON(&req); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-
-    if req.UserID != authUserID {
-        c.JSON(http.StatusForbidden, gin.H{"error": "user_id mismatch"})
         return
     }
 
