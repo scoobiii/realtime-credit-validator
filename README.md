@@ -369,23 +369,24 @@ realtime-credit-validator/
 🤖 CI/CD e Deploy
 
 GitHub Actions (.github/workflows/ci.yml)
-
+```
 · Lint com golangci-lint
 · Unit tests com cobertura
 · Testes de integração (Docker Compose + k6)
 · Build e push das imagens para GHCR
 · Security scan com Trivy
 · Validação Anatel automática a cada push na main
+```
 
 HTTPS e Proxy Reverso
 
 O arquivo deployments/docker-compose.yaml inclui um serviço nginx que:
-
+```
   · Redireciona HTTP → HTTPS
   · Termina TLS (certificados self-signed ou Let's Encrypt)
   · Aplica rate limit adicional
   · Faz proxy reverso para o gateway Go
-
+```
 Para gerar certificados:
 
 ```bash
@@ -407,7 +408,7 @@ Este script configura CI, gera certificados, sobe o ambiente com HTTPS e roda o 
 ---
 
 📈 Roadmap
-
+```
 · Gateway com JWT e rate limiting
 · Wallet service com ledger
 · Kafka assíncrono
@@ -419,19 +420,19 @@ Este script configura CI, gera certificados, sobe o ambiente com HTTPS e roda o 
 · Dashboard Grafana com métricas k6
 · Integração BACEN SPI (Pix real)
 · SDK cliente (Go, Python, Node)
-
+```
 
 💰 Licença e Uso Comercial
 
 Licença: Apache 2.0
 
 Uso livre para projetos open source. Para uso comercial:
-  
+  ```
   Tier Preço Inclui
   Startup R$ 2.000/mês até 1M req/mês, suporte email
   Enterprise R$ 8.000/mês ilimitado, SLA 99.9%, suporte dedicado
   White-label R$ 50.000 único código fonte + customização + treinamento
-  
+  ```
 Contato: abra uma issue ou env  ie email.
 
 ---
