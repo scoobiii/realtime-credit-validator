@@ -309,7 +309,7 @@ source. Para uso comercial:
 | customização + treinamento |
 Contato: abra uma 
 [issue](https://github.com/scoobiii/realtime-credit-validator/issues) 
-ou envie email. ---
+ou envie email  contato@mex.eco.br . ---
 ## 🤝 Contribuindo
 ```bash git checkout -b 
 feature/minha-feature
