@@ -1,0 +1,133 @@
+name: Anatel CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GO_VERSION: '1.21'
+  GKE_CLUSTER: anatel-cluster
+  GKE_ZONE: us-central1-c
+  IMAGE_REGISTRY: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/anatel-realtime
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Install k6
+        run: |
+          curl -L -o k6.tar.gz https://github.com/grafana/k6/releases/download/v0.54.0/k6-linux-amd64.tar.gz
+          tar -xzf k6.tar.gz
+          sudo mv k6-v0.54.0-linux-amd64/k6 /usr/local/bin/
+      - name: Install dependencies
+        run: go mod download
+      - name: Run unit tests
+        run: go test ./...
+      - name: Start infrastructure with Docker Compose
+        run: |
+          docker compose -f deployments/docker-compose.yaml up -d
+          sleep 10
+      - name: Build services
+        run: |
+          go build -o wallet ./cmd/wallet
+          go build -o policy ./cmd/policy
+          go build -o gateway ./src/gateway
+      - name: Run services in background
+        run: |
+          ./wallet > wallet.log 2>&1 &
+          ./policy > policy.log 2>&1 &
+          ./gateway > gateway.log 2>&1 &
+          sleep 3
+      - name: Generate JWT token
+        run: |
+          python3 - <<'EOF' > /tmp/token.txt
+          import jwt, time
+          payload = {
+            'user_id': 'testuser',
+            'scopes': ['credit:write'],
+            'exp': int(time.time()) + 86400,
+            'iat': int(time.time()),
+            'iss': 'realtime-credit-validator',
+            'aud': ['anatel-gateway']
+          }
+          print(jwt.encode(payload, 'changeme-in-production', algorithm='HS256'))
+          EOF
+      - name: Run Anatel load test (k6)
+        run: |
+          k6 run --vus 10 --duration 30s \
+            -e GATEWAY_URL=http://localhost:8080 \
+            -e TOKEN="$(cat /tmp/token.txt)" \
+            --summary-export=anatel_report.json \
+            tests/load/anatel-latency-test.js
+      - name: Verify no failures
+        run: |
+          FAILURES=$(jq '.metrics.http_req_failed.values.pass' anatel_report.json)
+          if [ "$FAILURES" != "0" ]; then exit 1; fi
+      - name: Check latency p95
+        run: |
+          P95=$(jq '.metrics.http_req_duration.values."p(95)"' anatel_report.json)
+          if (( $(echo "$P95 > 500" | bc -l) )); then exit 1; fi
+      - name: Upload test report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: anatel-report
+          path: anatel_report.json
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Configure Docker for Artifact Registry
+        run: |
+          gcloud auth configure-docker ${{ env.IMAGE_REGISTRY }}
+      - name: Build and push wallet image
+        run: |
+          docker build -t ${{ env.IMAGE_REGISTRY }}/wallet:latest -f src/wallet/Dockerfile .
+          docker push ${{ env.IMAGE_REGISTRY }}/wallet:latest
+      - name: Build and push policy image
+        run: |
+          docker build -t ${{ env.IMAGE_REGISTRY }}/policy:latest -f src/policy/Dockerfile .
+          docker push ${{ env.IMAGE_REGISTRY }}/policy:latest
+      - name: Build and push gateway image
+        run: |
+          docker build -t ${{ env.IMAGE_REGISTRY }}/gateway:latest -f src/gateway/Dockerfile .
+          docker push ${{ env.IMAGE_REGISTRY }}/gateway:latest
+
+  deploy-gke:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Get GKE credentials
+        run: |
+          gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+      - name: Apply Kubernetes manifests
+        run: |
+          kubectl apply -f deployments/k8s/namespace.yaml
+          kubectl apply -f deployments/k8s/deployment.yaml
+          kubectl apply -f deployments/k8s/service.yaml
+          kubectl apply -f deployments/k8s/ingress.yaml
+      - name: Wait for rollout
+        run: |
+          kubectl -n anatel-realtime rollout status deployment gateway --timeout=3m
