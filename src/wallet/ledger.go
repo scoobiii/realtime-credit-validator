@@ -1,4 +1,4 @@
-package wallet\n\nfunc AddCredit() {}
+package wallet
 
 import (
     "context"
@@ -7,7 +7,6 @@ import (
     "time"
 
     "github.com/google/uuid"
-    "github.com/lib/pq"
     "github.com/segmentio/kafka-go"
 )
 
