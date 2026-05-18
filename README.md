@@ -45,7 +45,7 @@ python3 --version
 ---
 
 📊 Resultados de Validação Anatel
-
+```
 Métrica Resultado Meta
 Taxa de sucesso 100% 99% ✅
 Latência média 13.47ms < 500ms ✅
@@ -55,7 +55,7 @@ Falhas 0 / 2620 0 ✅
 VUs concorrentes 10 10 ✅
 Throughput 87 req/s —
 Duração do teste 30s 30s ✅
-
+```
 ---
 
 🏗️ Arquitetura
@@ -81,7 +81,7 @@ Duração do teste 30s 30s ✅
 ```
 
 Componentes
-
+```
 Serviço Tecnologia Função
 Gateway Go + Gin Auth JWT, Rate Limit, Roteamento
 Wallet Go Ledger, Saldo, Crédito
@@ -91,7 +91,7 @@ PostgreSQL postgres:15 Persistência transacional
 Kafka confluentinc/cp-kafka Event sourcing assíncrono
 Zookeeper confluentinc/cp-zookeeper Coordenação Kafka
 Nginx (opcional) nginx:alpine Proxy reverso com HTTPS
-
+```
 ---
 
 🚀 Início Rápido
@@ -181,14 +181,14 @@ k6 run \
 ---
 
 ⚙️ Variáveis de Ambiente
-
+```
 Variável Padrão Descrição
 JWT_SECRET changeme-in-production Chave de assinatura JWT
 DB_URL postgres://user:password@postgres:5432/wallet?sslmode=disable URL do PostgreSQL
 REDIS_ADDR redis:6379 Endereço do Redis
 KAFKA_BROKERS kafka:9092 Brokers Kafka
 PORT 8080 Porta do gateway
-
+```
 ---
 
 🔐 Autenticação JWT
@@ -244,14 +244,14 @@ Resposta 200:
 ```
 
 Códigos de resposta:
-
+```
 Código Significado
 200 Crédito confirmado
 401 Token inválido ou ausente
 403 Scope insuficiente (aud errado)
 429 Rate limit excedido (1000 req/s)
 500 Erro interno
-
+```
 GET /health
 
 ```bash
@@ -423,14 +423,92 @@ Este script configura CI, gera certificados, sobe o ambiente com HTTPS e roda o 
 
 Licença: Apache 2.0
 
-Uso livre para projetos open source. Para uso comercial:
+Uso livre para projetos open source. 
+
+Para uso comercial:
+
   ```
-  Tier Preço Inclui
-  Startup R$ 2.000/mês até 1M req/mês, suporte email
-  Enterprise R$ 8.000/mês ilimitado, SLA 99.9%, suporte dedicado
-  White-label R$ 50.000 único código fonte + customização + treinamento
+# 💰 Pricing
+
+Infraestrutura de execução financeira com consistência ACID, eventos rastreáveis e camadas de compliance prontas para escala regulada.
+
+---
+
+## 🟢 Startup
+**R$ 2.000 / mês**
+
+Para times em crescimento que precisam de execução financeira confiável.
+
+- Até 1M requisições/mês  
+- Wallet + ledger ACID  
+- API Gateway com autenticação  
+- SLA 99.0%  
+- Suporte por email  
+- Infra multi-tenant padrão  
+
+**Ideal para:** MVPs e early-stage
+
+---
+
+## 🟡 Enterprise
+**A partir de R$ 8.000 / mês + uso excedente**
+
+Para operações críticas com requisitos de compliance e escala.
+
+- Tudo do plano Startup  
+- SLA 99.9%  
+- Suporte dedicado  
+- Audit logs completos  
+- Consent management (LGPD-ready)  
+- Event streaming e rastreabilidade  
+- Cobrança por volume excedente  
+
+**Ideal para:** scale-ups e operações reguladas
+
+---
+
+## 🔴 White-label / OEM
+**R$ 50.000+ setup + mensalidade recorrente**
+
+Para empresas que querem operar a plataforma como infraestrutura própria.
+
+- Código e stack customizável (licenciado)  
+- Deploy dedicado (cloud ou on-prem)  
+- Integração completa com sistemas internos  
+- Treinamento técnico + onboarding  
+- SLA personalizado  
+- Suporte contínuo (15–25% anual do contrato)  
+
+**Ideal para:** telcos, bancos, fintechs e integradores
+
+---
+
+# ⚡ One-liner
+
+**Financial execution infrastructure built for regulated scale.**
+
+---
+
+# 🧠 Resumo de posicionamento
+
+- Startup → uso e estabilidade básica  
+- Enterprise → escala + compliance + SLA  
+- White-label → licença + infraestrutura + operação  
+
+---
+
+# 📊 Estrutura sugerida de landing page
+
+1. Hero (headline + CTA)
+2. Problema (falhas financeiras, inconsistência, falta de auditoria)
+3. Solução (wallet + ledger + event + consent)
+4. Pricing
+5. Casos de uso (fintech, telecom, billing, crédito)
+6. Segurança & compliance
+7. CTA final
+   
   ```
-Contato: abra uma issue ou env  ie email.
+
 
 ---
 
@@ -446,7 +524,7 @@ git push origin feature/minha-feature
 ```
 
 ---
-
+```
 Validado em 17/05/2026 — Cloud Shell GCP — 10 VUs — 30s — 0 falhas
 CI/CD, HTTPS e scripts de deploy adicionados em 17/05/2026
 
