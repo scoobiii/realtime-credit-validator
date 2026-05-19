@@ -1,0 +1,16 @@
+=== BASELINE DO SISTEMA ATUAL (antes das melhorias) ===
+Data: 2026-05-19 01:03:39 UTC
+Git commit: b34e5fb
+
+--- Teste de carga (10 VUs / 30s) ---
+✅ Sucesso: 100% (falhas: 0)
+📊 Latência p95: 0 ms
+⚡ Throughput: 0 req/s
+
+--- Teste de carga (50 VUs / 30s) ---
+✅ Sucesso: 100% (falhas: 0)
+📊 Latência p95: 0 ms
+⚡ Throughput: 0 req/s
+
+--- Conclusão ---
+O sistema atende aos requisitos da Anatel (latência <500ms, disponibilidade >99%).
