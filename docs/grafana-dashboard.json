@@ -1,1 +1,12 @@
-404: Not Found
+{
+  "dashboard": {
+    "title": "Go Runtime - Gateway",
+    "panels": [
+      {"title": "Goroutines", "targets": [{"expr": "go_goroutines"}]},
+      {"title": "Heap Allocated", "targets": [{"expr": "go_memstats_heap_alloc_bytes"}]},
+      {"title": "GC Duration", "targets": [{"expr": "go_gc_duration_seconds"}]},
+      {"title": "HTTP Requests Rate", "targets": [{"expr": "rate(http_requests_total[1m])"}]}
+    ]
+  },
+  "overwrite": true
+}
